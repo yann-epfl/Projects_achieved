@@ -1,0 +1,104 @@
+start = -$odoy
+laser "scanpush cmd='zoneobst'"
+goto "distm"
+
+label "distm"
+followline "br" @v 0.2 : ($irdistfrontmiddle < 0.2)
+stop
+end = -$odoy
+offset = $irdistfrontmiddle+0.15
+eval end-start+offset
+stop
+turn 90
+drive @v 0.4 :  ($drivendist > 0.1)
+drive @v 0.4 :  ($blacklinefound)
+drive @v 0.4 :  ($drivendist > 0.1)
+drive @v 0.4 :  ($blacklinefound)
+stop
+drive @v 0.4 :($drivendist > 0.2)
+turn -90
+stop
+label "pushbox"
+
+
+followline "bm" : ($irdistfrontmiddle < 0.2)
+ignoreobstacles
+followline "bm" @v 0.2 : ($crossingblackline)
+followline "bm" : ($drivendist > 0.3)
+followline "bm" @v -0.2: ($drivendist > 1.5)
+turn -65 @v 0.3
+drive @v 0.4 : ($blacklinefound)
+stop
+followline "bm" @v 0.3 : ($crossingblackline)
+followline "br" : ($drivendist > 0.1)
+followline "br" : ($crossingblackline)
+
+label "loosegate"
+followline "bm" : ($l0 < 1)
+followline "bm" : ($l0 > 0.8)
+followline "bm" : ($drivendist > 0.55)
+turn 90
+
+
+label "followwall"
+
+drive @v 0.4 :($irdistfrontmiddle<0.2)
+turn 90
+drive :($l8 > 0.5)
+drive @v 0.4 :($drivendist > 0.5)
+turn -90
+drive @v 0.4 :($drivendist > 0.7)
+turn -90
+drive @v 0.4 :($drivendist > 0.2)
+followwall "r" 0.2 :($l8 > 0.5)
+drive @v 0.4 :($crossingblackline)
+drive @v 0.4 :($drivendist > 0.2)
+turn -90
+followline "bm" @v 0.4 :($drivendist > 0.9)
+turn 180
+followline "bm" @v 0.4 :($crossingblackline)
+label "white"
+
+label "findWhite"
+turn 5
+lm1  = $l5
+wait 0.01
+lm2 = $l5
+wait 0.01
+lm3 = $l5
+lm = (lm1+lm2+lm3)/3
+if (lm>2|lm==0) "findWhite"
+
+drive @v 0.4 :($l7<0.4&$l8!=0)
+followline "bm" : ($drivendist > 1.5)
+followline "bm" : ($l8 < 0.6)
+followline "bm" : ($l8 > 0.8)
+fwd 0.8
+turn -40
+drive @v 0.4 : ($blacklinefound)
+
+label "park"
+turn -65
+followline "bm" : ($crossingblackline)
+turn 90
+drive : ($l8 > 3)
+fwd 0.7
+turn -95
+drive : ($l8 < 3)
+stop
+drive : ($l8 > 3)
+stop
+fwd 0.2
+turn -95
+ignoreobstacles
+drive : ($l4 < 0.15)
+turn -95
+dist = $irdistfrontmiddle
+ignoreobstacles
+followwall "l" 0.1 : ($drivendist > dist)
+turnr 0.5 55 @v 0.2
+drive @v -0.2 : ($blacklinefound)
+turn 45
+ignoreobstacles
+followline "bm" @v 0.2 : ($drivendist > 0.4)
+followline "bm" : ($irdistfrontmiddle < 0.2)
